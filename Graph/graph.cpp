@@ -29,6 +29,13 @@ struct queue {
 		head = nullptr;
 		tail = nullptr;
 	}
+	queue(int* v, int size) {
+		head = nullptr;
+		tail = nullptr;
+		for(auto i = 0; i < size; ++i) {
+			push(v[i]);
+		}
+	}
 	bool empty() {
 		return head == nullptr;
 	}
@@ -98,6 +105,12 @@ struct stack {
 	stack() {
 		top = nullptr;
 	}
+	stack(int* v, int size) {
+		top = nullptr;
+		for(auto i = 0; i < size; ++i) {
+			push(v[i]);
+		}
+	}
 	bool empty() {
 		return top == nullptr;
 	}
@@ -134,19 +147,28 @@ struct stack {
 class Graph {
 	int size;
 	queue<int> *adj;
+	int** cost;
 	int head;
 public:
 	Graph(int, int);
 	virtual ~Graph();
-	void addEdge(int, int);
+	void addEdge(int, int, int);
 	void setHead(int);
 	void print();
 	queue<int> BFS(int);
 	queue<int> DFS(int);
+	queue<int> Dijkstra(int);
 };
 
 Graph::Graph(int size, int head) : size(size), head(head) {
 	adj = new queue<int>[size];
+	cost = new int*[size];
+	for(auto i = 0; i < size; ++i) {
+		cost[i] = new int[size];
+		for(auto j = 0; j < size; ++j) {
+			cost[i][j] = 0;
+		}
+	}
 }
 
 Graph::~Graph() {
@@ -157,12 +179,21 @@ Graph::~Graph() {
 		}
 	}
 	delete adj;
+	for(auto i = 0; i < size; ++i) {
+		delete cost[i];
+	}
+	delete cost;
 }
 
-void Graph::addEdge(int from, int to) {
+void Graph::addEdge(int from, int to, int cost = 0) {
 	if(adj[from].find(to) == nullptr) {
 		adj[from].push(to);
 	}
+	if(adj[to].find(from) == nullptr) {
+		adj[to].push(from);
+	}
+	this->cost[from][to] = cost;
+	this->cost[to][from] = cost;
 }
 
 void Graph::setHead(int head) {
@@ -170,10 +201,18 @@ void Graph::setHead(int head) {
 }
 
 void Graph::print() {
+	std::cout << "Adjacency: " << std::endl; 
 	for(auto i = 0; i < size; ++i) {
 		std::cout << i << " -> ";
 		adj[i].print();
 	}
+	std::cout << "Cost Matrix: " << std::endl;
+	for(auto i = 0; i < size; ++i) {
+		for(auto j = 0; j < size; ++j) {
+			std::cout << cost[i][j] << "\t";
+		}
+		std::cout << std::endl;
+	} 
 }
 
 //Breadth-First Search algorithm implementation
@@ -221,24 +260,120 @@ queue<int> Graph::BFS(int s) {
 }
 
 queue<int> Graph::DFS(int s) {
+	bool visited[size];
+	for (auto i = 0; i < size; i++) {
+		visited[i] = false;
+	}
+	int path[size];
+	bool found = false;
 	
-	return queue<int>();
+	stack<int> stacked;
+	stacked.push(head);
+	while(!stacked.empty()) {
+		auto q = stacked.pop();
+		if(visited[q]) continue;
+		visited[q] = true;
+
+		if(q == s) {
+			found = true;
+			break;
+		}
+
+		auto curr = adj[q].head;
+		while(curr != nullptr) {
+			if(visited[curr->val]) {
+				curr = curr->next;
+				continue;
+			}
+			stacked.push(curr->val);
+			path[curr->val] = q;
+			curr = curr->next;
+		}
+	}
+	if(!found) {
+		return queue<int>(); //empty path
+	}
+	int i = s;
+	queue<int> ret;
+	while(true) {
+		ret.push_front(i);
+		if (i == head) break;
+		i = path[i];
+	}
+	return ret;
+}
+queue<int> Graph::Dijkstra(int s) {
+	bool visited[size];
+	for(auto i = 0; i < size; ++i) {
+		visited[i] = false;
+	}
+	
+	int visitedTotal = 0;
+	int minCost[size];
+	for(auto i = 0; i < size; ++i) {
+		minCost[i] = INT32_MAX;
+	}
+	
+	int parent[size];
+	
+	minCost[head] = 0;
+	auto currentNode = head;
+
+	while(visitedTotal < size) {
+		auto curr = adj[currentNode].head;
+		while(curr != nullptr) {
+			auto c = cost[currentNode][curr->val] + minCost[currentNode];
+			if(c < minCost[curr->val]) {
+				minCost[curr->val] = c;
+				parent[curr->val] = currentNode;
+			}
+			curr = curr->next;
+		}
+		visited[currentNode] = true;
+		visitedTotal++;
+
+		auto minCurrCost = INT32_MAX;
+		auto nextNode =currentNode;
+		for(auto i = 0; i < size; ++i) {
+			if(!visited[i] && minCost[i] < minCurrCost) {
+				minCurrCost = minCost[i];
+				nextNode = i;
+			}
+		}
+		if(nextNode == currentNode) break;
+		currentNode = nextNode;
+	}
+	std::cout << "Minimum cost for node " << s << " is " << minCost[s] << std::endl;
+	queue<int> costs(minCost, size);
+	costs.print();
+	queue<int> ret;
+	auto i = s;
+	while(true) {
+		ret.push_front(i);
+		if(i == head) break;
+		i = parent[i];
+	}
+	return ret;
 }
 };
 
 int main() {
-	no_stl::Graph g(6, 0);
-	g.addEdge(0, 1);
-	g.addEdge(2, 3);
-	g.addEdge(2, 4);
-	g.addEdge(1, 3);
-	g.addEdge(1, 2);
-	g.addEdge(3, 1);
-	g.addEdge(4, 3);
-	g.addEdge(4, 5);
-	g.addEdge(5, 0);
+	no_stl::Graph g(7, 0);
+	g.addEdge(0, 1, 2);
+	g.addEdge(0, 5, 9);
+	g.addEdge(1, 2, 2);
+	g.addEdge(1, 3, 8);
+	g.addEdge(2, 3, 3);
+	g.addEdge(2, 4, 4);
+	g.addEdge(3, 4, 1);
+	g.addEdge(4, 5, 3);
+	g.addEdge(5, 6, 3);
 	g.print();
-	auto path = g.BFS(5);
+	auto path = g.BFS(4);
+	path.print();
+	path = g.DFS(4);
+	path.print();
+	path = g.Dijkstra(4);
 	path.print();
 	return 0;
 }
