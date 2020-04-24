@@ -1,16 +1,13 @@
 #pragma once
 
 template<class T>
-void Sorted::sort(std::vector<T>& A){
-    if(this->type == "quick") {
-        this->quickSort<T>(A);
-    }
-    else if (this->type == "merge") {
-        this->mergeSort<T>(A);
-    }
-    else {
-        throw "Sorting algorithm not supported";
-    }
+void Sorted::sort(std::vector<T>& A, Sorted::quick_sort_tag tag){
+    this->quickSort<T>(A);
+}
+
+template<class T>
+void Sorted::sort(std::vector<T>& A, Sorted::merge_sort_tag tag){
+    this->mergeSort<T>(A);
 }
 
 template<class T>

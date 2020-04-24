@@ -14,14 +14,9 @@ int main() {
     std::vector<std::string>tstring({"asdfsd", "tregid", "dsfjlg", "dsfhuthr", "sdgiofhwer", "gtheivnew00", "asdfsdq"});
 
     Sorted sorter;
-    try {
-        sorter.chooseSorter("quick");
-    } catch (std::string e) {
-        std::cout << e << std::endl;
-    }
-    sorter.sort<int>(tint);
-    sorter.sort<float>(tfloat);
-    sorter.sort<std::string>(tstring);
+    sorter.sort<int>(tint, Sorted::quick_sort);
+    sorter.sort<float>(tfloat, Sorted::quick_sort);
+    sorter.sort<std::string>(tstring, Sorted::quick_sort);
 
     print<int>(tint);
     print<float>(tfloat);
