@@ -20,16 +20,16 @@ struct elem {
 	}
 };
 
-//Queue implementation without using stl functions
+//Double-Ended Queue implementation without using stl functions
 template <class T>
-struct queue {
+struct deque {
 	elem<T> *head;
 	elem<T> *tail;
-	queue() {
+	deque() {
 		head = nullptr;
 		tail = nullptr;
 	}
-	queue(int* v, int size) {
+	deque(int* v, int size) {
 		head = nullptr;
 		tail = nullptr;
 		for(auto i = 0; i < size; ++i) {
@@ -146,7 +146,7 @@ struct stack {
 //Simple graph implementation with few search algorithms
 class Graph {
 	int size;
-	queue<int> *adj;
+	deque<int> *adj;
 	int** cost;
 	int head;
 public:
@@ -155,13 +155,13 @@ public:
 	void addEdge(int, int, int);
 	void setHead(int);
 	void print();
-	queue<int> BFS(int);
-	queue<int> DFS(int);
-	queue<int> Dijkstra(int);
+	deque<int> BFS(int);
+	deque<int> DFS(int);
+	deque<int> Dijkstra(int);
 };
 
 Graph::Graph(int size, int head) : size(size), head(head) {
-	adj = new queue<int>[size];
+	adj = new deque<int>[size];
 	cost = new int*[size];
 	for(auto i = 0; i < size; ++i) {
 		cost[i] = new int[size];
@@ -216,14 +216,14 @@ void Graph::print() {
 }
 
 //Breadth-First Search algorithm implementation
-queue<int> Graph::BFS(int s) {
+deque<int> Graph::BFS(int s) {
 	bool visited[size];
 	for(auto i = 0; i < size; i++) {
 		visited[i] = false;
 	}
 	bool found = false;
 	int path[size];
-	queue<int> queued;
+	deque<int> queued;
 
 	queued.push(head);
 	visited[head] = true;
@@ -247,9 +247,9 @@ queue<int> Graph::BFS(int s) {
 			curr = curr->next;
 		}
 	}
-	if(!found) return queue<int>(); // empty path
+	if(!found) return deque<int>(); // empty path
 
-	queue<int> ret;
+	deque<int> ret;
 	int i = s;
 	while(true) {
 		ret.push_front(i);
@@ -259,7 +259,7 @@ queue<int> Graph::BFS(int s) {
 	return ret;
 }
 
-queue<int> Graph::DFS(int s) {
+deque<int> Graph::DFS(int s) {
 	bool visited[size];
 	for (auto i = 0; i < size; i++) {
 		visited[i] = false;
@@ -291,10 +291,10 @@ queue<int> Graph::DFS(int s) {
 		}
 	}
 	if(!found) {
-		return queue<int>(); //empty path
+		return deque<int>(); //empty path
 	}
 	int i = s;
-	queue<int> ret;
+	deque<int> ret;
 	while(true) {
 		ret.push_front(i);
 		if (i == head) break;
@@ -302,7 +302,7 @@ queue<int> Graph::DFS(int s) {
 	}
 	return ret;
 }
-queue<int> Graph::Dijkstra(int s) {
+deque<int> Graph::Dijkstra(int s) {
 	bool visited[size];
 	for(auto i = 0; i < size; ++i) {
 		visited[i] = false;
@@ -344,9 +344,9 @@ queue<int> Graph::Dijkstra(int s) {
 		currentNode = nextNode;
 	}
 	std::cout << "Minimum cost for node " << s << " is " << minCost[s] << std::endl;
-	queue<int> costs(minCost, size);
+	deque<int> costs(minCost, size);
 	costs.print();
-	queue<int> ret;
+	deque<int> ret;
 	auto i = s;
 	while(true) {
 		ret.push_front(i);

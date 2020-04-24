@@ -1,8 +1,2 @@
-*
-!*/
-!*.gitignore
-!*.c
-!*.cpp
-!*.h
-!*.hpp
-!*.cmake
+.vscode
+**/build/*

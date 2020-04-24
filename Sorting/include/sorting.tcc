@@ -1,45 +1,15 @@
 #pragma once
-#include <string>
-#include <vector>
-#include <stack>
-#include <iostream>
-
-class Sorted {
-public:
-    Sorted();
-    Sorted(std::string str);
-    virtual ~Sorted(){};
-
-    template<class T>
-    void sort(std::vector<T>& A);
-    
-    void chooseSorter(std::string type);
-protected:
-    std::string type;
-
-    template<class T>
-    void merge(std::vector<T>& A, int iBegin, int iMiddle, int iEnd, std::vector<T>& B);
-
-    template<class T>
-    void mergeSort(std::vector<T>& A);
-
-    template<class T>
-    int partition(std::vector<T>& vec, int iBegin, int iEnd);
-
-    template<class T>
-    void quickSort(std::vector<T>& vec);
-};
 
 template<class T>
 void Sorted::sort(std::vector<T>& A){
     if(this->type == "quick") {
-        this->quickSort(A);
+        this->quickSort<T>(A);
     }
     else if (this->type == "merge") {
-        this->mergeSort(A);
+        this->mergeSort<T>(A);
     }
     else {
-        std::cerr << "Sorting algorithm not supported" << std::endl;
+        throw "Sorting algorithm not supported";
     }
 }
 
