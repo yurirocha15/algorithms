@@ -1,5 +1,5 @@
 #pragma once
-
+//tag dispatching
 template<class T>
 void Sorted::sort(std::vector<T>& A, Sorted::quick_sort_tag tag){
     this->quickSort<T>(A);
@@ -10,6 +10,7 @@ void Sorted::sort(std::vector<T>& A, Sorted::merge_sort_tag tag){
     this->mergeSort<T>(A);
 }
 
+//A is sorted from begin to middle and from middle to end. This function merge those two intervals into B.
 template<class T>
 void Sorted::merge(std::vector<T>& A, int iBegin, int iMiddle, int iEnd, std::vector<T>& B) {
     for(int k = iBegin, i = iBegin, j = iMiddle; k < iEnd; k++) {
@@ -22,7 +23,7 @@ void Sorted::merge(std::vector<T>& A, int iBegin, int iMiddle, int iEnd, std::ve
     }
 }
 
-
+//We use the bottom-up approach here to avoid recursions. Swapping B and A on each interaction avoids unnecessary copies.
 template<class T>
 void Sorted::mergeSort(std::vector<T>& A) {
     if(A.empty()) return;
@@ -45,7 +46,7 @@ void Sorted::mergeSort(std::vector<T>& A) {
     }
 }
 
-
+//This function put the values smaller than the pivot to its left, and the bigger ones to its right
 template<class T>
 int Sorted::partition(std::vector<T>& vec, int iBegin, int iEnd) {
     T pivot = vec[iEnd ];
@@ -59,6 +60,7 @@ int Sorted::partition(std::vector<T>& vec, int iBegin, int iEnd) {
     return pos;
 }
 
+//We use a stack to store the next limits tuples. This perform the sorting in a depth first approach ensuring log(N) storage requirement.
 template<class T>
 void Sorted::quickSort(std::vector<T>& vec) {
     if(vec.empty()) return;
