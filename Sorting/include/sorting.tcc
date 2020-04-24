@@ -23,7 +23,7 @@ void Sorted::merge(std::vector<T>& A, int iBegin, int iMiddle, int iEnd, std::ve
     }
 }
 
-//We use the bottom-up approach here to avoid recursions. Swapping B and A on each interaction avoids unnecessary copies.
+//We use the bottom-up approach here to avoid recursions. Swapping B and A on each iteration avoids unnecessary copies.
 template<class T>
 void Sorted::mergeSort(std::vector<T>& A) {
     if(A.empty()) return;
