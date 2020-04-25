@@ -26,5 +26,5 @@ $ cd /usr/src/googletest
 
 # create symbolic links to all gtest libraries into the /usr/lib folder 
 
-$ sudo find -name "*.a" -exec ln -vsr "{}" --target-directory="/usr/lib" ';'
+$ sudo find . -name "*.a" -exec ln -vsr "{}" --target-directory="/usr/lib" ';'
 ```
