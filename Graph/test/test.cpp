@@ -15,3 +15,5 @@ TEST_F(GraphTester, testEmpty) {
     ASSERT_EXIT((graph.DFS(1), exit(0)), ::testing::ExitedWithCode(0), ".*");
     ASSERT_EXIT((graph.Dijkstra(1), exit(0)), ::testing::ExitedWithCode(0), ".*");
 }
+
+//TODO: test resize, wrong access, 

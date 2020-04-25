@@ -37,6 +37,26 @@ struct deque {
 			push(v[i]);
 		}
 	}
+	deque(deque const& copy) {
+		head = nullptr;
+		tail = nullptr;
+		for(elem<T>* i = copy.head; i != nullptr; i = i->next) {
+			push(i->val);
+		}
+	}
+	~deque() {
+		for(elem<T>* i = head; i != nullptr; ) {
+			auto next  = i->next;
+			delete i;
+			i = next;
+		}
+	}
+	deque& operator=(deque const& copy) {
+		for(elem<T>* i = copy.head; i != nullptr; i = i->next) {
+			push(i->val);
+		}
+		return *this;
+	}
 	bool empty() {
 		return head == nullptr;
 	}
@@ -111,6 +131,25 @@ struct stack {
 		for(auto i = 0; i < size; ++i) {
 			push(v[i]);
 		}
+	}
+	stack(stack const& copy) {
+		top = nullptr;
+		for(elem<T>* i = copy.top; i != nullptr; i = i->next) {
+			push(i->val);
+		}
+	}
+	~stack() {
+		for(elem<T>* i = top; i != nullptr; ) {
+			auto next  = i->next;
+			delete i;
+			i = next;
+		}
+	}
+	stack& operator=(stack const& copy) {
+		for(elem<T>* i = copy.top; i != nullptr; i = i->next) {
+			push(i->val);
+		}
+		return *this;
 	}
 	bool empty() {
 		return top == nullptr;
