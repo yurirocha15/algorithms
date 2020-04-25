@@ -10,6 +10,11 @@ void Sorted::sort(std::vector<T>& A, Sorted::merge_sort_tag tag){
     this->mergeSort<T>(A);
 }
 
+template<class T>
+void Sorted::sort(std::vector<T>& A, Sorted::insertion_sort_tag tag){
+    this->insertionSort<T>(A);
+}
+
 //A is sorted from begin to middle and from middle to end. This function merge those two intervals into B.
 template<class T>
 void Sorted::merge(std::vector<T>& A, int iBegin, int iMiddle, int iEnd, std::vector<T>& B) {
@@ -83,5 +88,16 @@ void Sorted::quickSort(std::vector<T>& vec) {
             next_tuple.push(std::vector<int>{iBegin, pi - 1});
             next_tuple.push(std::vector<int>{pi + 1, iEnd});
         }
+    }
+}
+
+template<class T>
+void Sorted::insertionSort(std::vector<T>& vec) {
+    if(vec.empty()) return;
+    for(auto i = vec.begin(); i != vec.end(); ++i) {
+        //find insertion point. Because the sequence from begin until i is sorted, we can use the upper_bound function.
+        auto ip = std::upper_bound(vec.begin(), i, *i);
+        //The rotate function is used to remove the value from its current position, shift the sequence from ip to i, and insert the value to the correct insertion point.
+        std::rotate(ip, i, i + 1);
     }
 }
